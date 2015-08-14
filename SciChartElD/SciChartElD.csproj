@@ -161,9 +161,6 @@
     <Compile Include="SciChartControl.xaml.cs">
       <DependentUpon>SciChartControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SciTraderView.xaml.cs">
-      <DependentUpon>SciTraderView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utility\CustomDateTimeLabelFormatter.cs" />
     <Compile Include="Utility\CustomDateLabelFormatter.cs" />
     <Compile Include="ViewModel\ChartViewModel.cs" />
@@ -189,10 +186,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SciChartControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SciTraderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

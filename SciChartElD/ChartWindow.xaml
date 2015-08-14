@@ -1,0 +1,10 @@
+﻿<Window x:Class="SciChartElD.ChartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local ="clr-namespace:SciChartElD"
+        x:Name="ChartWindowHaHa"
+        Title="ChartWindow" Height="300" Width="300" KeyDown="MainWindow_KeyDown">
+    <Grid>
+        <local:SciChartControl x:Name="sciChartControl" />
+    </Grid>
+</Window>
