@@ -1,0 +1,939 @@
+﻿<UserControl x:Class="SciChartElD.SciChartControl"
+             x:Name="SchiChartControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+             xmlns:Utility="clr-namespace:Shared.Utility;assembly=Shared"
+             xmlns:Converters="clr-namespace:SciChartElD.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding Main, Source={StaticResource Locator}}" 
+             Focusable="True"
+             KeyDown="OnSciChartControlKeyDown">
+    <UserControl.Resources>
+
+        <Utility:IsChartTypeConverter x:Key="IsChartTypeModifier" />
+        <Utility:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+        <Utility:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Utility:IsModifierTypeConverter x:Key="IsModifierTypeConverter" />
+        <Converters:FormatConverter x:Key="FormatConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+
+        <!--        Copied here from SciTraderView.xaml     -->
+
+        <Style x:Key="ChartDataItemsStyle"
+               BasedOn="{StaticResource TextBlockStyle}"
+               TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{Binding SeriesColor, Converter={StaticResource ColorToBrushConverter}}" />
+        </Style>
+        <!--          ***********************      -->
+
+        <Style x:Key="SciChartSurfaceStyle"
+               TargetType="s:SciChartSurface">
+            <Setter Property="Background"
+                    Value="{Binding BackgroundColor}" />
+            <Setter Property="Padding"
+                    Value="5" />
+        </Style>
+
+        <!-- Define styles for the GridLinesPanel -->
+        <Style x:Key="GridLinesPanelStyle"
+               TargetType="s:GridLinesPanel">
+            <Setter Property="Background"
+                    Value="{Binding BackgroundColor}" />
+            <Setter Property="BorderThickness"
+                    Value="2" />
+            <Setter Property="BorderBrush"
+                    Value="SteelBlue" />
+        </Style>
+
+        <!-- Brushes used for cursor labels -->
+        <SolidColorBrush x:Key="LabelBackgroundBrush"
+                         Color="#BBFF9933" />
+        <SolidColorBrush x:Key="LabelBorderBrush"
+                         Color="#FFFF9933" />
+        <SolidColorBrush x:Key="LabelForegroundBrush"
+                         Color="white" />
+        <SolidColorBrush x:Key="CursorLineBrush"
+                         Color="#77333333" />
+
+        <!--  Common label (TextBlock) style used in cursors  -->
+        <Style x:Key="HintDataItemsStyle"
+               TargetType="TextBlock">
+            <Setter Property="Foreground"
+                    Value="{StaticResource LabelForegroundBrush}" />
+            <Setter Property="FontWeight"
+                    Value="Bold" />
+            <Setter Property="FontFamily"
+                    Value="Arial" />
+            <Setter Property="FontSize"
+                    Value="12" />
+            <Setter Property="Margin"
+                    Value="3,2,2,2" />
+        </Style>
+
+        <!-- Style for Line Annotation -->
+        <Style x:Key="LineAnnotationStyle"
+               TargetType="s:LineAnnotation">
+            <Setter Property="Stroke"
+                    Value="#FFFF6600" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+        </Style>
+
+        <Style x:Key="TrendLineStyle"
+               TargetType="s:LineAnnotation">
+            <Setter Property="Stroke"
+                    Value="{Binding TrendLineColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+        </Style>
+
+        <!-- Style for Horizontal Line Annotation -->
+        <Style x:Key="HorizontalLineAnnotationStyle"
+               TargetType="s:HorizontalLineAnnotation">
+            <Setter Property="Stroke"
+                    Value="Orange" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="ShowLabel"
+                    Value="False" />
+            <Setter Property="LabelPlacement"
+                    Value="Axis" />
+            <Setter Property="FontSize"
+                    Value="12" />
+            <Setter Property="FontWeight"
+                    Value="Bold" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+        </Style>
+
+        <!-- Style for Fibonacci Line Annotation -->
+        <Style x:Key="FibonacciLineAnnotationStyle"
+               TargetType="s:HorizontalLineAnnotation">
+            <Setter Property="Stroke"
+                    Value="{Binding FiboLineColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="ShowLabel"
+                    Value="True" />
+            <Setter Property="LabelPlacement"
+                    Value="Right" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch" />
+        </Style>
+
+        <!--  Style for 20 period Moving Average  -->
+        <Style x:Key="Ma20SeriesStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding SMAColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for ADX-->
+        <Style x:Key="ADXSeriesStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding ADXLineColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for ATR-->
+        <Style x:Key="ATRSeriesStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding ATRLineColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for CCI-->
+        <Style x:Key="CCISeriesStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding CCILineColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="UpperBandStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding UpperBandColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for Middle Band  -->
+        <Style x:Key="MiddleBandStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding MiddleBandColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LowerBandStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding LowerBandColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LRStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding LRColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RSIStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding RSIColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="VWAPStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding VWAPColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MACDStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding MACDColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="MACDSignalStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding MACDSignalColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StochLineOneStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding StochLineOneColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StochLineTwoStyle"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding StochLineTwoColor}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+
+        <Style x:Key="BidVolumeColumnSeriesStyle"
+               TargetType="s:FastColumnRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="#FFFF704D" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="FillBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#FFFF704D" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#FFFF704D"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="AskVolumeColumnSeriesStyle"
+               TargetType="s:FastColumnRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="#FF70DBFF" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="FillBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#FF70DBFF" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#FF70DBFF"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="VolumeAtPriceColumnSeriesStyle"
+               TargetType="s:FastColumnRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="#5970DBFF" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="FillBrush">
+                <Setter.Value>
+                    <SolidColorBrush Color="#5970DBFF" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#5970DBFF"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Template for the RolloverModifier tooltip to display AxisInfo collection (result of hit test)  -->
+        <DataTemplate x:Key="OhlcCustomSeriesRolloverLabelTemplate">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.ColumnSpan="2"
+                           HorizontalAlignment="Left"
+                           Text="{Binding SeriesName}"
+                           Visibility="{Binding SeriesName,Converter={StaticResource CollapseIfNullOrEmptyStringConverter}}" />
+
+                <StackPanel Grid.Row="1">
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="Open" />
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="High" />
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="Low" />
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="Close" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1"
+                            Grid.Column="1">
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="{Binding OpenValue,
+                                      StringFormat=\{0:0.000\}}" />
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="{Binding HighValue,
+                                      StringFormat=\{0:0.000\}}" />
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="{Binding LowValue,
+                                      StringFormat=\{0:0.000\}}" />
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="{Binding CloseValue,
+                                      StringFormat=\{0:0.000\}}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <ControlTemplate x:Key="CustomCursorLabelTemplate"
+                         TargetType="s:TemplatableControl">
+            <Border Background="LightSalmon"
+                    BorderBrush="Salmon"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                <ItemsControl Margin="6"
+                              ItemsSource="{Binding SeriesData.SeriesInfo}"
+                              ItemTemplate="{StaticResource OhlcCustomSeriesRolloverLabelTemplate}">
+                </ItemsControl>
+            </Border>
+        </ControlTemplate>
+
+        <!--  Style for Candlestick chart  -->
+        <Style x:Key="PriceCandlestickSeriesStyle"
+               TargetType="s:FastCandlestickRenderableSeries">
+            <Setter Property="IsVisible"
+                    Value="{Binding SelectedChartType, Mode=TwoWay, Converter={StaticResource IsChartTypeModifier}, ConverterParameter=FastCandlestick}" />
+            <Setter Property="UpWickColor"
+                    Value="{Binding UpWickColor}" />
+            <Setter Property="DownWickColor"
+                    Value="{Binding DownWickColor}" />
+            <Setter Property="UpBodyBrush"
+                    Value="{Binding UpColor, Converter={StaticResource ColorToBrushConverter}}" />
+            <Setter Property="DownBodyBrush"
+                    Value="{Binding DownColor, Converter={StaticResource ColorToBrushConverter}}" />
+            <Setter Property="AntiAliasing"
+                    Value="False"></Setter>
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="1"
+                                 Height="1"
+                                 Fill="#FF52CC54"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for Ohlc chart  -->
+        <Style x:Key="PriceOhlcSeriesStyle"
+               TargetType="s:FastOhlcRenderableSeries">
+            <Setter Property="IsVisible"
+                    Value="{Binding SelectedChartType, Mode=TwoWay, Converter={StaticResource IsChartTypeModifier}, ConverterParameter=FastOhlc}" />
+            <Setter Property="UpWickColor"
+                    Value="{Binding UpColor}" />
+            <Setter Property="DownWickColor"
+                    Value="{Binding DownColor}" />
+            <Setter Property="AntiAliasing"
+                    Value="False"></Setter>
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#FF52CC54"
+                                 Stroke="White"
+                                 StrokeThickness="2" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for Line Chart Y1 -->
+        <Style x:Key="LineStyleY1"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="IsVisible"
+                    Value="{Binding SelectedChartType, Mode=TwoWay, Converter={StaticResource IsChartTypeModifier}, ConverterParameter=FastLine}" />
+            <Setter Property="SeriesColor"
+                    Value="Green" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for Line Chart Y2 -->
+        <Style x:Key="LineStyleY2"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding Y2Color}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for Line Chart Y3 -->
+        <Style x:Key="LineStyleY3"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding Y3Color}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for Line Chart Y4 -->
+        <Style x:Key="LineStyleY4"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding Y4Color}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Style for Line Chart Y5 -->
+        <Style x:Key="LineStyleY5"
+               TargetType="s:FastLineRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="{Binding Y5Color}" />
+            <Setter Property="StrokeThickness"
+                    Value="1" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#AAFFA500"
+                                 Stroke="White"
+                                 StrokeThickness="1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Style for Column chart  -->
+        <Style x:Key="VolumeSeriesStyle"
+               TargetType="s:FastColumnRenderableSeries">
+            <Setter Property="SeriesColor"
+                    Value="#FFA1BACE" />
+            <Setter Property="FillColor"
+                    Value="#D04682B4" />
+            <Setter Property="RolloverMarkerTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Width="9"
+                                 Height="9"
+                                 Fill="#D04682B4"
+                                 Stroke="White"
+                                 StrokeThickness="2" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="XYScatterStyle"
+               TargetType="s:XyScatterRenderableSeries">
+            <Setter Property="PointMarker">
+                <Setter.Value>
+                    <s:EllipsePointMarker Width="3"
+                                          Height="3"
+                                          Fill="LightBlue"
+                                          Stroke="LightBlue" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- The style to be applied to markers of SeriesValueModifier -->
+        <Style x:Key="AxisMarkerStyle"
+               TargetType="s:SeriesValueAxisMarkerAnnotation">
+            <Setter Property="Panel.ZIndex"
+                    Value="{Binding Path=(Panel.ZIndex)}" />
+        </Style>
+
+
+        <Style x:Key="CustomMarkerStyleY1"
+               TargetType="s:AxisMarkerAnnotation">
+            <Setter Property="YAxisId"
+                    Value="Y1" />
+            <Setter Property="Background"
+                    Value="Gray" />
+            <Setter Property="BorderBrush"
+                    Value="Gray" />
+            <Setter Property="Foreground"
+                    Value="White" />
+        </Style>
+
+        <Style x:Key="CustomMarkerStyleY2"
+               TargetType="s:AxisMarkerAnnotation">
+            <Setter Property="YAxisId"
+                    Value="Y2" />
+            <Setter Property="Background"
+                    Value="Red" />
+            <Setter Property="BorderBrush"
+                    Value="Red" />
+            <Setter Property="Foreground"
+                    Value="White" />
+        </Style>
+
+        <Style x:Key="CustomMarkerStyleY3"
+               TargetType="s:AxisMarkerAnnotation">
+            <Setter Property="YAxisId"
+                    Value="Y3" />
+            <Setter Property="Background"
+                    Value="Yellow" />
+            <Setter Property="BorderBrush"
+                    Value="Yellow" />
+            <Setter Property="Foreground"
+                    Value="Black" />
+        </Style>
+
+        <Style x:Key="CustomMarkerStyleY4"
+               TargetType="s:AxisMarkerAnnotation">
+            <Setter Property="YAxisId"
+                    Value="Y4" />
+            <Setter Property="Background"
+                    Value="LightSkyBlue" />
+            <Setter Property="BorderBrush"
+                    Value="LightSkyBlue" />
+            <Setter Property="Foreground"
+                    Value="White" />
+        </Style>
+
+        <Style x:Key="CustomMarkerStyleY5"
+               TargetType="s:AxisMarkerAnnotation">
+            <Setter Property="YAxisId"
+                    Value="Y5" />
+            <Setter Property="Background"
+                    Value="Goldenrod" />
+            <Setter Property="BorderBrush"
+                    Value="Goldenrod" />
+            <Setter Property="Foreground"
+                    Value="White" />
+        </Style>
+
+        <Style x:Key="TxtBlkStyle"
+               TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin"
+                    Value="0,10,0,0" />
+            <Setter Property="Background"
+                    Value="Black" />
+            <Setter Property="Foreground"
+                    Value="Orange" />
+            <Setter Property="FontSize"
+                    Value="16" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="Height"
+                    Value="50" />
+        </Style>
+
+        <DataTemplate x:Key="ChartDataTemplate"
+                      DataType="sciChart:SeriesInfo">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Margin="3,2,2,2"
+                           Style="{StaticResource ChartDataItemsStyle}"
+                           Text="{Binding SeriesName}" />
+                <TextBlock Grid.Column="1"
+                           Margin="0,2,2,2"
+                           Style="{StaticResource ChartDataItemsStyle}"
+                           Text=":" />
+                <TextBlock Grid.Column="2"
+                           Margin="3,2,20,2"
+                           Style="{StaticResource ChartDataItemsStyle}"
+                           Text="{Binding Value,
+                                          StringFormat=\{0:0.000\}}" />
+            </Grid>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid Background="#333"
+          x:Name="ContentGrid">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Name="Top"
+                           Height="4*" />
+        </Grid.RowDefinitions>
+
+        <s:SciChartSurface x:Name="priceChart" 
+            s:SciChartGroup.VerticalChartGroup="myGroup"
+            Grid.Row="0" Style="{StaticResource SciChartSurfaceStyle}"
+            GridLinesPanelStyle="{StaticResource GridLinesPanelStyle}"
+                           SeriesSource="{Binding SeriesViewModels}">
+            <!-- YAxes="{Binding ChartYAxes, Mode=TwoWay}"-->
+
+            <!--TA:Comment out context menu for now-->
+            <!--
+            <s:SciChartSurface.ContextMenu>
+                <ContextMenu ItemsSource="{Binding ContextMenuList}">
+                    <ContextMenu.ItemContainerStyle>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="MenuItem.Header"
+                                    Value="{Binding Name}" />
+                            <Setter Property="MenuItem.ItemsSource"
+                                    Value="{Binding Children}" />
+                            <Setter Property="Command"
+                                    Value="{Binding MenuCommand}" />
+                            <Setter Property="CommandParameter"
+                                    Value="{Binding Name}" />
+                            <Setter Property="IsChecked"
+                                    Value="{Binding Path=IsChecked,Mode=TwoWay}" />
+                        </Style>
+                    </ContextMenu.ItemContainerStyle>
+                </ContextMenu>
+            </s:SciChartSurface.ContextMenu>-->
+
+            <s:SciChartSurface.XAxis>
+                <s:CategoryDateTimeAxis AutoRange="Always"
+                                        BarTimeFrame="{Binding BarTimeFrame}"
+                                        DrawMajorBands="{Binding ShowVerticalLines}"
+                                        DrawMajorGridLines="{Binding ShowVerticalLines}"
+                                        DrawMinorGridLines="{Binding ShowVerticalLines}"
+                                        GrowBy="0.0, 0.1"
+                                        VisibleRangeChanged="CategoryDateTimeAxis_VisibleRangeChanged" />
+                <!--VisibleRange="{Binding XVisibleRange,Mode=TwoWay}"-->
+            </s:SciChartSurface.XAxis>
+
+            <!-- TA: create Y axis here-->
+            <s:SciChartSurface.YAxis>
+                <s:NumericAxis  DrawMinorTicks="False" TextFormatting="0.00" AutoRange="Always" 
+                               DrawMajorGridLines="{Binding ShowHLines}"
+                               DrawMinorGridLines="{Binding ShowHLines}">
+                    <!--AxisAlignment="Right" BorderBrush="{Binding Y2Color, Converter={StaticResource ColorToBrushConverter}}" BorderThickness="1,0,0,0"-->
+
+                </s:NumericAxis>
+
+
+            </s:SciChartSurface.YAxis>
+            <s:SciChartSurface.ChartModifier>
+                <s:ModifierGroup>
+                    <s:YAxisDragModifier  DragMode="Scale" ReceiveHandledEvents="True"/>
+                    <s:ZoomPanModifier/>
+                    <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick"/>
+                    <s:SeriesValueModifier/>
+                    <s:MouseWheelZoomModifier/>
+                    <!--<s:AnnotationCreationModifier x:Name="annotationCreation"
+                                                  AnnotationCreated="OnAnnotationCreated" />-->
+                    <s:XAxisDragModifier ClipModeX="None" />
+                    <s:CursorModifier IsEnabled="{Binding ShowCursor}"
+                                      ShowAxisLabels="True"
+                                      ShowTooltip="True"
+                                      ReceiveHandledEvents="True">
+                    </s:CursorModifier>
+                    <s:SeriesSelectionModifier ReceiveHandledEvents="True"
+                                               SelectionChanged="SeriesSelectionModifier_SelectionChanged">
+                        <s:SeriesSelectionModifier.SelectedSeriesStyle>
+                            <Style TargetType="s:BaseRenderableSeries">
+                                <Setter Property="SeriesColor"
+                                        Value="White" />
+                                <Setter Property="PointMarkerTemplate">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <s:EllipsePointMarker Fill="#FF00DC"
+                                                                  Stroke="White"
+                                                                  Width="2"
+                                                                  Height="2" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </s:SeriesSelectionModifier.SelectedSeriesStyle>
+                    </s:SeriesSelectionModifier>
+                </s:ModifierGroup>
+            </s:SciChartSurface.ChartModifier>
+        </s:SciChartSurface>
+
+        <TextBlock Grid.Row="0"
+                   Text="Waiting for Data"
+                   Style="{StaticResource TxtBlkStyle}"
+                   Visibility="{Binding ShowWaitLabel,
+                                        Converter={StaticResource BoolToVisConverter}}" />
+    </Grid>
+
+</UserControl>
