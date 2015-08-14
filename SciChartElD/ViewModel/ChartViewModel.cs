@@ -715,7 +715,8 @@ namespace SciChartElD.ViewModel
 
             ICommand fiveMinCommand = new ActionCommand(() => ChangeDuration(BarDuration.FiveMinute));
             MenuItemViewModel fiveMin = new MenuItemViewModel("5 Minute", null, fiveMinCommand, false);
-            durationModelMap.Add("5Min", oneMin);
+            //durationModelMap.Add("5Min", oneMin);
+            durationModelMap.Add("5Min", fiveMin);
             durationColl.Add(fiveMin);
 
             ICommand tenMinCommand = new ActionCommand(() => ChangeDuration(BarDuration.TenMinute));
@@ -738,76 +739,76 @@ namespace SciChartElD.ViewModel
             #endregion
 
             #region Technical Indicators
-            /*
-            ObservableCollection<MenuItemViewModel> technicalColl = new ObservableCollection<MenuItemViewModel>();
 
+            ObservableCollection<MenuItemViewModel> technicalColl = new ObservableCollection<MenuItemViewModel>();
+            /*
             ICommand ADXCommand = new ActionCommand(() => ADXAddRemove());
             MenuItemViewModel adx = new MenuItemViewModel("ADX", null, ADXCommand, false);
             technicalColl.Add(adx);
+            
+             ICommand CCICommand = new ActionCommand(() => CCIAddRemove());
+             MenuItemViewModel cci = new MenuItemViewModel("CCI", null, CCICommand, false);
+             technicalColl.Add(cci);
 
-            ICommand CCICommand = new ActionCommand(() => CCIAddRemove());
-            MenuItemViewModel cci = new MenuItemViewModel("CCI", null, CCICommand, false);
-            technicalColl.Add(cci);
+             ICommand BBCommand = new ActionCommand(() => BBandsAddRemove());
+             MenuItemViewModel bbands = new MenuItemViewModel("Bollinger Bands", null, BBCommand, false);
+             technicalColl.Add(bbands);
 
-            ICommand BBCommand = new ActionCommand(() => BBandsAddRemove());
-            MenuItemViewModel bbands = new MenuItemViewModel("Bollinger Bands", null, BBCommand, false);
-            technicalColl.Add(bbands);
+             ICommand FibCommand = new ActionCommand(() => FibAddRemove());
+             MenuItemViewModel fib = new MenuItemViewModel("Fibonacci", null, FibCommand, false);
+             technicalColl.Add(fib);
 
-            ICommand FibCommand = new ActionCommand(() => FibAddRemove());
-            MenuItemViewModel fib = new MenuItemViewModel("Fibonacci", null, FibCommand, false);
-            technicalColl.Add(fib);
+             ICommand LRCommand = new ActionCommand(() => LRAddRemove());
+             MenuItemViewModel lr = new MenuItemViewModel("Linear Regression", null, LRCommand, false);
+             technicalColl.Add(lr);
 
-            ICommand LRCommand = new ActionCommand(() => LRAddRemove());
-            MenuItemViewModel lr = new MenuItemViewModel("Linear Regression", null, LRCommand, false);
-            technicalColl.Add(lr);
+             ICommand MACDCommand = new ActionCommand(() => MACDAddRemove());
+             MenuItemViewModel macd = new MenuItemViewModel("MACD", null, MACDCommand, false);
+             technicalColl.Add(macd);
 
-            ICommand MACDCommand = new ActionCommand(() => MACDAddRemove());
-            MenuItemViewModel macd = new MenuItemViewModel("MACD", null, MACDCommand, false);
-            technicalColl.Add(macd);
+             ICommand SMACommand = new ActionCommand(() => SMAAddRemove());
+             MenuItemViewModel sma = new MenuItemViewModel("Moving Average", null, SMACommand, false);
+             technicalColl.Add(sma);
 
-            ICommand SMACommand = new ActionCommand(() => SMAAddRemove());
-            MenuItemViewModel sma = new MenuItemViewModel("Moving Average", null, SMACommand, false);
-            technicalColl.Add(sma);
+             ICommand SARCommand = new ActionCommand(() => SARAddRemove());
+             MenuItemViewModel sar = new MenuItemViewModel("Parabolic SAR", null, SARCommand, false);
+             technicalColl.Add(sar);
 
-            ICommand SARCommand = new ActionCommand(() => SARAddRemove());
-            MenuItemViewModel sar = new MenuItemViewModel("Parabolic SAR", null, SARCommand, false);
-            technicalColl.Add(sar);
+             ICommand RSICommand = new ActionCommand(() => RSIAddRemove());
+             MenuItemViewModel rsi = new MenuItemViewModel("RSI", null, RSICommand, false);
+             technicalColl.Add(rsi);
 
-            ICommand RSICommand = new ActionCommand(() => RSIAddRemove());
-            MenuItemViewModel rsi = new MenuItemViewModel("RSI", null, RSICommand, false);
-            technicalColl.Add(rsi);
+             ICommand StochCommand = new ActionCommand(() => StochAddRemove());
+             MenuItemViewModel stoch = new MenuItemViewModel("Stochastic", null, StochCommand, false);
+             technicalColl.Add(stoch);
 
-            ICommand StochCommand = new ActionCommand(() => StochAddRemove());
-            MenuItemViewModel stoch = new MenuItemViewModel("Stochastic", null, StochCommand, false);
-            technicalColl.Add(stoch);
+             ICommand TrendlineCommand = new ActionCommand(() => AddTrendLine());
+             MenuItemViewModel trendLine = new MenuItemViewModel("Trend Line", null, TrendlineCommand, false);
+             technicalColl.Add(trendLine);
 
-            ICommand TrendlineCommand = new ActionCommand(() => AddTrendLine());
-            MenuItemViewModel trendLine = new MenuItemViewModel("Trend Line", null, TrendlineCommand, false);
-            technicalColl.Add(trendLine);
+             ICommand VolumeCommand = new ActionCommand(() => AddRemoveVolume());
+             MenuItemViewModel volume = new MenuItemViewModel("Volume", null, VolumeCommand, false);
+             technicalColl.Add(volume);
+             ICommand VWAPCommand = new ActionCommand(() => VWAPAddRemove());
+             MenuItemViewModel vwap = new MenuItemViewModel("Volume Weighted Average Price", null, VWAPCommand, false);
+             technicalColl.Add(vwap);
 
-            ICommand VolumeCommand = new ActionCommand(() => AddRemoveVolume());
-            MenuItemViewModel volume = new MenuItemViewModel("Volume", null, VolumeCommand, false);
-            technicalColl.Add(volume);
-            ICommand VWAPCommand = new ActionCommand(() => VWAPAddRemove());
-            MenuItemViewModel vwap = new MenuItemViewModel("Volume Weighted Average Price", null, VWAPCommand, false);
-            technicalColl.Add(vwap);
+             ICommand ATRCommand = new ActionCommand(() => ATRAddRemove());
+             MenuItemViewModel atr = new MenuItemViewModel("ATR", null, ATRCommand, false);
+             technicalColl.Add(atr);
 
-            ICommand ATRCommand = new ActionCommand(() => ATRAddRemove());
-            MenuItemViewModel atr = new MenuItemViewModel("ATR", null, ATRCommand, false);
-            technicalColl.Add(atr);
+             ICommand VolumeAtPriceCommand = new ActionCommand(() => VolumeAtPriceAddRemove());
+             MenuItemViewModel volumeAtPx = new MenuItemViewModel("Volume At Price", null, VolumeAtPriceCommand, false);
+             //technicalColl.Add(volumeAtPx);
 
-            ICommand VolumeAtPriceCommand = new ActionCommand(() => VolumeAtPriceAddRemove());
-            MenuItemViewModel volumeAtPx = new MenuItemViewModel("Volume At Price", null, VolumeAtPriceCommand, false);
-            //technicalColl.Add(volumeAtPx);
-
-            ICommand HorizontalLineCommand = new ActionCommand(() => HorizontalLineAddRemove());
-            MenuItemViewModel horizontalLine = new MenuItemViewModel("Horizontal Line", null, HorizontalLineCommand, false);
-            technicalColl.Add(horizontalLine);
+             ICommand HorizontalLineCommand = new ActionCommand(() => HorizontalLineAddRemove());
+             MenuItemViewModel horizontalLine = new MenuItemViewModel("Horizontal Line", null, HorizontalLineCommand, false);
+             technicalColl.Add(horizontalLine);
 
 
-            ContextMenuList.Add(new MenuItemViewModel("Technical Indicators", technicalColl, null, false));
+             ContextMenuList.Add(new MenuItemViewModel("Technical Indicators", technicalColl, null, false));
 
-            */
+             */
             #endregion
 
             //ICommand techPrefCommand = new ActionCommand(() => ShowTechPreferences());

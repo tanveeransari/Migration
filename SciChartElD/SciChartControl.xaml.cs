@@ -23,7 +23,6 @@ namespace SciChartElD
 {
     public partial class SciChartControl : UserControl
     {
-        private bool subscribedToFeed = false;
         public SciChartControl()
         {
             InitializeComponent();
@@ -40,18 +39,8 @@ namespace SciChartElD
 
         internal void OnSciChartControlKeyDown(object sender, KeyEventArgs e)
         {
-
             var chartVM = this.DataContext as ViewModel.ChartViewModel;
-            //var chartVM = ((ViewModel.ViewModelLocator)FindResource("Locator")).Main;
             Debug.Assert(chartVM != null, "Unable to find chartVM from Control's data context");
-            //if (!subscribedToFeed)
-            //{
-            //    if (chartVM.StartUpdatesCommand.CanExecute(null))
-            //    {
-            //        chartVM.StartUpdatesCommand.Execute(null);
-            //        subscribedToFeed = true;
-            //    }
-            //}
 
             if (e.Key == Key.Delete)
             {
@@ -72,7 +61,8 @@ namespace SciChartElD
 
         private void CategoryDateTimeAxis_VisibleRangeChanged(object sender, Abt.Controls.SciChart.VisibleRangeChangedEventArgs e)
         {
-            Debug.WriteLine("CategoryDateTimeAxis_VisibleRangeChanged " + e.ToString());
+            Debug.WriteLine("{0} from {1}:{2} to {3}:{4}","CategoryDateTimeAxis_VisibleRangeChanged ",e.OldVisibleRange.Min, e.OldVisibleRange.Max,
+                e.NewVisibleRange.Min, e.NewVisibleRange.Max);
         }
 
         //private void OnAnnotationCreated(object sender, EventArgs e)

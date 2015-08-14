@@ -849,7 +849,7 @@
             <!-- YAxes="{Binding ChartYAxes, Mode=TwoWay}"-->
 
             <!--TA:Comment out context menu for now-->
-            <!--
+            
             <s:SciChartSurface.ContextMenu>
                 <ContextMenu ItemsSource="{Binding ContextMenuList}">
                     <ContextMenu.ItemContainerStyle>
@@ -867,7 +867,7 @@
                         </Style>
                     </ContextMenu.ItemContainerStyle>
                 </ContextMenu>
-            </s:SciChartSurface.ContextMenu>-->
+            </s:SciChartSurface.ContextMenu>
 
             <s:SciChartSurface.XAxis>
                 <s:CategoryDateTimeAxis AutoRange="Always"
