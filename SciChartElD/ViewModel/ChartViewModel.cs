@@ -92,7 +92,7 @@ namespace SciChartElD.ViewModel
             else
             {
                 // Code runs "for real"
-                _marketDataService = new MarketDataService(new DateTime(2015, 08, 11), 1, 250);
+                _marketDataService = new MarketDataService(new DateTime(2015, 08, 11), 1, 1000);
             }
 
             var ds0 = new OhlcDataSeries<DateTime, double>();
@@ -105,10 +105,11 @@ namespace SciChartElD.ViewModel
                 prices.Select(x => x.High),
                 prices.Select(x => x.Low),
                 prices.Select(x => x.Close));
+            
             _marketDataService.SubscribePriceUpdate(OnNewPrice);
             _xVisibleRange = new IndexRange(0, 1000);
+            
             SelectedChartType = ChartType.FastOhlc;
-
         }
 
 

@@ -28,14 +28,5 @@ namespace SciChartElD
             this.Title = pChartName;
             this.AllowDrop = true;
         }
-
-        /// <summary>
-        /// Pass window key down event to control to handle
-        /// </summary>
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            Debug.WriteLine("  *** ***  KeyDown  main window   *** ");
-            this.sciChartControl.OnSciChartControlKeyDown(sender, e);
-        }
     }
 }

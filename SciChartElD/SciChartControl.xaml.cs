@@ -27,17 +27,32 @@ namespace SciChartElD
         {
             InitializeComponent();
             this.InitializeHereNotInViewModel();
+
+            //this.chartSurface.MouseDoubleClick += (s, e) =>
+            //{
+            //    Point mousePosSurface = Mouse.GetPosition(this.chartSurface);
+            //    Debug.WriteLine("Surface mouse double click X:0 Y:1 from surface", mousePosSurface.X, mousePosSurface.Y);
+
+            //    IInputElement ctrl = Mouse.DirectlyOver;
+            //    Debug.WriteLine("Mouse directly over " + ctrl);
+
+            //    Debug.Assert(ctrl is FrameworkElement, "Mouse was over control that isn't framework element");
+            //    FrameworkElement fwe = ctrl as FrameworkElement;
+            //    while (fwe.Parent != null && !(fwe is Abt.Controls.SciChart.Visuals.Axes.NumericAxis))
+            //    {
+            //        fwe = fwe.Parent as FrameworkElement;
+            //    }
+            //    if (fwe.Parent != null) Debug.WriteLine("Found the Numeric axis");
+            //};
+
         }
 
         private void InitializeHereNotInViewModel()
         {
             //SciChartGroup.SetVerticalChartGroup(this.priceChart, this.Name + "myGroup");
-            var chartVM = this.DataContext as ViewModel.ChartViewModel;
-
-            Debug.Assert(chartVM != null, "Unable to find chartVM from Control's data context");
         }
 
-        internal void OnSciChartControlKeyDown(object sender, KeyEventArgs e)
+        private void HandleKeyPress(object sender, KeyEventArgs e)
         {
             var chartVM = this.DataContext as ViewModel.ChartViewModel;
             Debug.Assert(chartVM != null, "Unable to find chartVM from Control's data context");
@@ -61,7 +76,7 @@ namespace SciChartElD
 
         private void CategoryDateTimeAxis_VisibleRangeChanged(object sender, Abt.Controls.SciChart.VisibleRangeChangedEventArgs e)
         {
-            Debug.WriteLine("{0} from {1}:{2} to {3}:{4}","CategoryDateTimeAxis_VisibleRangeChanged ",e.OldVisibleRange.Min, e.OldVisibleRange.Max,
+            Debug.WriteLine("{0} from {1}:{2} to {3}:{4}", "CategoryDateTimeAxis_VisibleRangeChanged ", e.OldVisibleRange.Min, e.OldVisibleRange.Max,
                 e.NewVisibleRange.Min, e.NewVisibleRange.Max);
         }
 

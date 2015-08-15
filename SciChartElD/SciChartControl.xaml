@@ -7,11 +7,11 @@
              xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
              xmlns:Utility="clr-namespace:Shared.Utility;assembly=Shared"
              xmlns:Converters="clr-namespace:SciChartElD.Converters"
+             xmlns:c="clr-namespace:SciChartElD.Utility"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Main, Source={StaticResource Locator}}" 
-             Focusable="True"
-             KeyDown="OnSciChartControlKeyDown">
+             Focusable="True">
     <UserControl.Resources>
 
         <Utility:IsChartTypeConverter x:Key="IsChartTypeModifier" />
@@ -841,15 +841,11 @@
                            Height="4*" />
         </Grid.RowDefinitions>
 
-        <s:SciChartSurface x:Name="priceChart" 
-            s:SciChartGroup.VerticalChartGroup="myGroup"
-            Grid.Row="0" Style="{StaticResource SciChartSurfaceStyle}"
-            GridLinesPanelStyle="{StaticResource GridLinesPanelStyle}"
+        <s:SciChartSurface x:Name="chartSurface" s:SciChartGroup.VerticalChartGroup="myGroup"
+            Grid.Row="0" Style="{StaticResource SciChartSurfaceStyle}" GridLinesPanelStyle="{StaticResource GridLinesPanelStyle}"
                            SeriesSource="{Binding SeriesViewModels}">
             <!-- YAxes="{Binding ChartYAxes, Mode=TwoWay}"-->
 
-            <!--TA:Comment out context menu for now-->
-            
             <s:SciChartSurface.ContextMenu>
                 <ContextMenu ItemsSource="{Binding ContextMenuList}">
                     <ContextMenu.ItemContainerStyle>
@@ -875,32 +871,36 @@
                                         DrawMajorBands="{Binding ShowVerticalLines}"
                                         DrawMajorGridLines="{Binding ShowVerticalLines}"
                                         DrawMinorGridLines="{Binding ShowVerticalLines}"
-                                        GrowBy="0.0, 0.1"
-                                        VisibleRangeChanged="CategoryDateTimeAxis_VisibleRangeChanged" />
-                <!--VisibleRange="{Binding XVisibleRange,Mode=TwoWay}"-->
+                                        GrowBy="0.0, 0.1"/>
+                <!--  VisibleRangeChanged="CategoryDateTimeAxis_VisibleRangeChanged" 
+                VisibleRange="{Binding XVisibleRange,Mode=TwoWay}"-->
+
             </s:SciChartSurface.XAxis>
 
             <!-- TA: create Y axis here-->
             <s:SciChartSurface.YAxis>
-                <s:NumericAxis  DrawMinorTicks="False" TextFormatting="0.00" AutoRange="Always" 
-                               DrawMajorGridLines="{Binding ShowHLines}"
-                               DrawMinorGridLines="{Binding ShowHLines}">
-                    <!--AxisAlignment="Right" BorderBrush="{Binding Y2Color, Converter={StaticResource ColorToBrushConverter}}" BorderThickness="1,0,0,0"-->
+                <s:NumericAxis DrawMinorTicks="False" TextFormatting="0.00" AutoRange="Always" 
+                               DrawMajorGridLines="{Binding ShowHLines}" DrawMinorGridLines="{Binding ShowHLines}"
+                    BorderBrush="{Binding Y2Color, Converter={StaticResource ColorToBrushConverter}}" BorderThickness="1,0,0,0">
 
                 </s:NumericAxis>
-
-
             </s:SciChartSurface.YAxis>
+
             <s:SciChartSurface.ChartModifier>
                 <s:ModifierGroup>
-                    <s:YAxisDragModifier  DragMode="Scale" ReceiveHandledEvents="True"/>
+                    <!--my added modifiers-->
+                    <!--<s:YAxisDragModifier  DragMode="Scale" ReceiveHandledEvents="True"/>
                     <s:ZoomPanModifier/>
                     <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick"/>
                     <s:SeriesValueModifier/>
-                    <s:MouseWheelZoomModifier/>
+                    <s:MouseWheelZoomModifier/>-->
+                    <c:YAxisDoubleClickChartModifier ReceiveHandledEvents="True"/>
+                    <!--end of my own modifiers-->
                     <!--<s:AnnotationCreationModifier x:Name="annotationCreation"
                                                   AnnotationCreated="OnAnnotationCreated" />-->
-                    <s:XAxisDragModifier ClipModeX="None" />
+
+
+                    <s:XAxisDragModifier ClipModeX="None"/>
                     <s:CursorModifier IsEnabled="{Binding ShowCursor}"
                                       ShowAxisLabels="True"
                                       ShowTooltip="True"
