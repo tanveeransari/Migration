@@ -52,7 +52,7 @@ namespace SciChartElD
             //SciChartGroup.SetVerticalChartGroup(this.priceChart, this.Name + "myGroup");
         }
 
-        private void HandleKeyPress(object sender, KeyEventArgs e)
+        internal void HandleKeyDown(object sender, KeyEventArgs e)
         {
             var chartVM = this.DataContext as ViewModel.ChartViewModel;
             Debug.Assert(chartVM != null, "Unable to find chartVM from Control's data context");
@@ -60,7 +60,16 @@ namespace SciChartElD
             if (e.Key == Key.Delete)
             {
                 Debug.WriteLine("Chart Delete Key Pressed");
-                chartVM.DeleteSeries();
+                if (chartSurface.SelectedRenderableSeries.Count > 0)
+                {
+                    //TODO: Remove tech indicators
+                }
+                var selectedAnnotations = chartSurface.Annotations.Where(annotation => annotation.IsSelected).ToList();
+
+                foreach (var selectedAnnotation in selectedAnnotations)
+                {
+                    chartSurface.Annotations.Remove(selectedAnnotation);
+                }
             }
             else if (e.Key == Key.Space)
             {
@@ -72,6 +81,18 @@ namespace SciChartElD
         private void SeriesSelectionModifier_SelectionChanged(object sender, EventArgs e)
         {
             Debug.WriteLine("SeriesSelectionModifier_SelectionChanged");
+            bool hasSelection = chartSurface.SelectedRenderableSeries.Any();
+            if (hasSelection)
+            {
+                foreach (var seri in chartSurface.SelectedRenderableSeries)
+                {
+                    Debug.WriteLine(seri.GetType());
+                    //if (seri is HorizontalLineAnnotation)
+                    //{ 
+                        
+                    //}
+                }
+            }
         }
 
         private void CategoryDateTimeAxis_VisibleRangeChanged(object sender, Abt.Controls.SciChart.VisibleRangeChangedEventArgs e)
@@ -80,9 +101,27 @@ namespace SciChartElD
                 e.NewVisibleRange.Min, e.NewVisibleRange.Max);
         }
 
-        //private void OnAnnotationCreated(object sender, EventArgs e)
-        //{
-        //     Debug.WriteLine("OnAnnotationCreated");
-        //}
+        private void OnAnnotationCreated(object sender, EventArgs e)
+        {
+            var newAnnotation = (annotationCreation.Annotation as AnnotationBase);
+            if (newAnnotation != null)
+            {
+                newAnnotation.IsEditable = true;
+                newAnnotation.CanEditText = true;
+            }
+            //pointerButton.IsChecked = true;
+        }
+
+        private void OnAnnotationTypeChanged(object sender, RoutedEventArgs e)
+        {
+            //string annotationType = "HorizontalLineAnnotation";
+            var type = typeof(HorizontalLineAnnotation);
+            var resourceName = String.Format("{0}Style", type.Name);
+            if (Resources.Contains(resourceName))
+            {
+                annotationCreation.AnnotationStyle = (Style)Resources[resourceName];
+            }
+            annotationCreation.AnnotationType = type;
+        }
     }
 }

@@ -21,6 +21,7 @@ using Abt.Controls.SciChart.Visuals.Annotations;
 using Abt.Controls.SciChart.Visuals.Axes;
 using Abt.Controls.SciChart.Visuals.RenderableSeries;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using ProtoBuf;
 using SciChartElD.Data;
 using SciChartElD.Utility;
@@ -105,13 +106,21 @@ namespace SciChartElD.ViewModel
                 prices.Select(x => x.High),
                 prices.Select(x => x.Low),
                 prices.Select(x => x.Close));
-            
+
             _marketDataService.SubscribePriceUpdate(OnNewPrice);
             _xVisibleRange = new IndexRange(0, 1000);
-            
+
             SelectedChartType = ChartType.FastOhlc;
+
+            //this.DeleteCommand = new RelayCommand(DeleteCommandExecuted);
         }
 
+        //private void DeleteCommandExecuted()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public RelayCommand DeleteCommand { get; set; }
 
         public ICommand StartUpdatesCommand
         {

@@ -20,7 +20,7 @@ namespace SciChartElD
         public ChartWindow()
             : this("Tanveer")
         {
-
+            this.KeyDown += this.sciChartControl.HandleKeyDown;
         }
         public ChartWindow(string pChartName)
         {

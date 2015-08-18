@@ -147,6 +147,7 @@
     <Compile Include="Common\TimeFrame.cs" />
     <Compile Include="Common\Trade.cs" />
     <Compile Include="Converters\FormatConverter.cs" />
+    <Compile Include="CustomModifiers\KeyDownChartModifier.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\DoubleSeries.cs" />
     <Compile Include="Data\IDataManager.cs" />
@@ -163,7 +164,7 @@
     </Compile>
     <Compile Include="Utility\CustomDateTimeLabelFormatter.cs" />
     <Compile Include="Utility\CustomDateLabelFormatter.cs" />
-    <Compile Include="Utility\YAxisDoubleClickChartModifier.cs" />
+    <Compile Include="CustomModifiers\YAxisDoubleClickChartModifier.cs" />
     <Compile Include="ViewModel\ChartViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="ChartWindow.xaml">
