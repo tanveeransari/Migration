@@ -11,8 +11,10 @@ using Abt.Controls.SciChart.Utility;
 using Abt.Controls.SciChart.Visuals;
 using Abt.Controls.SciChart.Model.DataSeries;
 using Abt.Controls.SciChart.Visuals.RenderableSeries;
+using Abt.Controls.SciChart.Visuals.Annotations;
+using System.Windows.Data;
 
-namespace SciChartElD.Utility
+namespace SciChartElD.CustomModifiers
 {
     public class YAxisDoubleClickChartModifier : ChartModifierBase
     {
@@ -38,21 +40,30 @@ namespace SciChartElD.Utility
 
                 double currentYValue = frstChrtSer.YAxis.GetCurrentCoordinateCalculator().GetDataValue(currentMousePoint.Y);
 
-                if (frstChrtSer.XAxis.IsCategoryAxis) Debug.WriteLine("Series X Axis is category axis");
-                //frstChrtSer.XAxis.DataRange
-                var horizLine = new XyDataSeries<DateTime, double>();
-                if (frstChrtSer.DataSeries.XValues.Count == 0 || !(frstChrtSer.DataSeries.XValues[0] is DateTime)) return;
 
-                foreach (var datum in frstChrtSer.DataSeries.XValues)
+                var sciChart = (SciChartSurface)ParentSurface;
+                var modifiers = sciChart.ChartModifier as ModifierGroup;
+                foreach (var m in modifiers.ChildModifiers)
                 {
-                    horizLine.Append((DateTime)datum, currentYValue);
+                    if (m is AnnotationCreationModifier)
+                    {
+                        var a = m as AnnotationCreationModifier;
+                        a.AnnotationStyle = (Style)FindResource("HorizontalLineAnnotationStyle");
+                        a.AnnotationType = typeof(HorizontalLineAnnotation);
+                        Debug.WriteLine("Adding horizontal line annotation");
+                        break;
+                    }
                 }
 
-                using (var ssp = ParentSurface.SuspendUpdates())
-                {
-                    ParentSurface.SeriesSource.Add(new ChartSeriesViewModel(horizLine, new FastLineRenderableSeries()));
-                    ParentSurface.ResumeUpdates(ssp);
-                }
+                //var horizLine = new XyDataSeries<DateTime, double>();
+                //foreach (var datum in frstChrtSer.DataSeries.XValues)
+                //{horizLine.Append((DateTime)datum, currentYValue);}
+
+                //using (var ssp = ParentSurface.SuspendUpdates())
+                //{
+                //    ParentSurface.SeriesSource.Add(new ChartSeriesViewModel(horizLine, new FastLineRenderableSeries()));
+                //    ParentSurface.ResumeUpdates(ssp);
+                //}
             }
         }
     }

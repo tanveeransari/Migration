@@ -7,7 +7,7 @@
              xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
              xmlns:Utility="clr-namespace:Shared.Utility;assembly=Shared"
              xmlns:Converters="clr-namespace:SciChartElD.Converters"
-             xmlns:c="clr-namespace:SciChartElD.Utility"
+             xmlns:c="clr-namespace:SciChartElD.CustomModifiers"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Main, Source={StaticResource Locator}}" 
@@ -832,7 +832,6 @@
         </DataTemplate>
 
     </UserControl.Resources>
-
     <Grid Background="#333"
           x:Name="ContentGrid">
 
@@ -896,16 +895,8 @@
 
             <s:SciChartSurface.ChartModifier>
                 <s:ModifierGroup>
-                    <!--my added modifiers-->
-                    <!--<s:YAxisDragModifier  DragMode="Scale" ReceiveHandledEvents="True"/>
-                    <s:ZoomPanModifier/>
-                    <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick"/>
-                    <s:SeriesValueModifier/>
-                    <s:MouseWheelZoomModifier/>-->
-                    <c:YAxisDoubleClickChartModifier ReceiveHandledEvents="True"/>
-                    <!--end of my own modifiers-->
-                    <!--<s:AnnotationCreationModifier x:Name="annotationCreation"
-                                                  AnnotationCreated="OnAnnotationCreated" />-->
+                    <s:AnnotationCreationModifier x:Name="annotationCreation"
+                                                  AnnotationCreated="OnAnnotationCreated" />
 
 
                     <s:XAxisDragModifier ClipModeX="None"/>
@@ -914,6 +905,15 @@
                                       ShowTooltip="True"
                                       ReceiveHandledEvents="True">
                     </s:CursorModifier>
+                    <!--my added modifiers-->
+                    <!--<s:YAxisDragModifier  DragMode="Scale" ReceiveHandledEvents="True"/>
+                    <s:ZoomPanModifier/>
+                    <s:ZoomExtentsModifier ExecuteOn="MouseDoubleClick"/>
+                    <s:SeriesValueModifier/>
+                    <s:MouseWheelZoomModifier/>-->
+                    <c:YAxisDoubleClickChartModifier ReceiveHandledEvents="True"/>
+                    <!--end of my own modifiers-->
+                    
                     <s:SeriesSelectionModifier ReceiveHandledEvents="True"
                                                SelectionChanged="SeriesSelectionModifier_SelectionChanged">
                         <s:SeriesSelectionModifier.SelectedSeriesStyle>
@@ -924,7 +924,7 @@
                                     <Setter.Value>
                                         <ControlTemplate>
                                             <s:EllipsePointMarker Fill="#FF00DC"
-                                                                  Stroke="White"
+                                                                  Stroke="Red"
                                                                   Width="2"
                                                                   Height="2" />
                                         </ControlTemplate>
