@@ -96,7 +96,7 @@ namespace SciChartElD.ViewModel
             }
 
             var ds0 = new OhlcDataSeries<DateTime, double>();
-            _seriesViewModels.Add(new ChartSeriesViewModel(ds0, new FastOhlcRenderableSeries() { Name = "Series1" }));
+            _seriesViewModels.Add(new ChartSeriesViewModel(ds0, new FastOhlcRenderableSeries() { Name = "Series1", XAxisId = "dateTimeXAxis", YAxisId = "Y1" }));
             // Append 500 historical bars to data series
             var prices = _marketDataService.GetHistoricalData(500);
             ds0.Append(
@@ -105,10 +105,32 @@ namespace SciChartElD.ViewModel
                 prices.Select(x => x.High),
                 prices.Select(x => x.Low),
                 prices.Select(x => x.Close));
-            
+
+            //Create price/volume distribution
+            double minPrice = prices.Select(x => x.Low).Min();
+            double maxPrice = prices.Select(x => x.High).Max();
+
+            int numBins = 5;
+            double interval = (maxPrice - minPrice) / numBins;
+            var bins = new Tuple<double, double>[numBins];
+            double binLower = minPrice;
+            for (int i = 0; i < numBins; i++)
+            {
+                bins[i] = new Tuple<double, double>(binLower, binLower + interval);
+                binLower += interval;
+            }
+
+            var dsVolByPrice = new XyDataSeries<double, double>();
+            _seriesViewModels.Add(new ChartSeriesViewModel(dsVolByPrice, new FastColumnRenderableSeries() { Name = "PriceByVol", XAxisId = "verticalXAxis", YAxisId = "Y2" }));
+
+            var dblVolume = new List<double>();
+            for (int i = 0; i < numBins; i++) dblVolume.Add(10 - i);
+
+            dsVolByPrice.Append(bins.Select(x => x.Item1), dblVolume);
+
             _marketDataService.SubscribePriceUpdate(OnNewPrice);
             _xVisibleRange = new IndexRange(0, 1000);
-            
+
             SelectedChartType = ChartType.FastOhlc;
         }
 

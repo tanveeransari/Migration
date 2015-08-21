@@ -865,26 +865,34 @@
                 </ContextMenu>
             </s:SciChartSurface.ContextMenu>
 
-            <s:SciChartSurface.XAxis>
-                <s:CategoryDateTimeAxis AutoRange="Always"
+            <s:SciChartSurface.XAxes>
+                <s:CategoryDateTimeAxis AutoRange="Once" 
+                                        Id="dateTimeXAxis" IsPrimaryAxis="True" AxisAlignment="Bottom"
                                         BarTimeFrame="{Binding BarTimeFrame}"
                                         DrawMajorBands="{Binding ShowVerticalLines}"
                                         DrawMajorGridLines="{Binding ShowVerticalLines}"
                                         DrawMinorGridLines="{Binding ShowVerticalLines}"
-                                        GrowBy="0.0, 0.1"/>
+                                        GrowBy="0.0, 0.1" VisibleRange="{Binding XVisibleRange,Mode=TwoWay}"
+                                        />
                 <!--  VisibleRangeChanged="CategoryDateTimeAxis_VisibleRangeChanged" 
-                VisibleRange="{Binding XVisibleRange,Mode=TwoWay}"-->
+                -->
 
-            </s:SciChartSurface.XAxis>
+                <s:NumericAxis Id="verticalXAxis" AxisAlignment="Left" AutoRange="Once" 
+                               DataContext="{Binding ElementName=valueYAxis, Path=DataContext}" VisibleRange="{Binding PriceVisibleRange, Mode=OneWay}"/>
+
+            </s:SciChartSurface.XAxes>
 
             <!-- TA: create Y axis here-->
-            <s:SciChartSurface.YAxis>
-                <s:NumericAxis DrawMinorTicks="False" TextFormatting="0.00" AutoRange="Always" 
-                               DrawMajorGridLines="{Binding ShowHLines}" DrawMinorGridLines="{Binding ShowHLines}"
-                    BorderBrush="{Binding Y2Color, Converter={StaticResource ColorToBrushConverter}}" BorderThickness="1,0,0,0">
+            <s:SciChartSurface.YAxes>
+                <s:NumericAxis 
+                    x:Name="valueYAxis" Id="Y1" IsPrimaryAxis="True"
+                               DrawMinorTicks="False" TextFormatting="0.00" AutoRange="Always" 
+                               DrawMajorGridLines="{Binding ShowHLines}" DrawMinorGridLines="{Binding ShowHLines}" VisibleRange="{Binding PriceVisibleRange, Mode=OneWayToSource}"
+                    BorderBrush="{Binding Y2Color, Converter={StaticResource ColorToBrushConverter}}" BorderThickness="1,0,0,0"/>
 
-                </s:NumericAxis>
-            </s:SciChartSurface.YAxis>
+                <s:NumericAxis x:Name="priceByVolYAxis" AutoRange="Always" AxisAlignment="Bottom"  Id="Y2"/>
+
+            </s:SciChartSurface.YAxes>
 
             <s:SciChartSurface.ChartModifier>
                 <s:ModifierGroup>
